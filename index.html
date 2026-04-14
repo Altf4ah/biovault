@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BioVault — Organic DNA Storage System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0f0d;
+    --bg2: #101810;
+    --bg3: #141f18;
+    --green: #1D9E75;
+    --green-dim: #0F6E56;
+    --green-pale: #9FE1CB;
+    --green-faint: rgba(29,158,117,0.08);
+    --green-faint2: rgba(29,158,117,0.15);
+    --text: #e8f0ec;
+    --text2: #7a9e8a;
+    --text3: #3d5e4a;
+    --border: rgba(29,158,117,0.18);
+    --border2: rgba(29,158,117,0.32);
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  a { color: var(--green); text-decoration: none; }
+  a:hover { color: var(--green-pale); }
+
+  ::selection { background: var(--green); color: #000; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,15,13,0.92);
+    border-bottom: 0.5px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .nav-logo {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo .helix {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text2);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+
+  .nav-cta {
+    font-size: 12px;
+    padding: 6px 14px;
+    border: 0.5px solid var(--border2);
+    border-radius: 4px;
+    color: var(--green) !important;
+    transition: background 0.15s;
+  }
+
+  .nav-cta:hover { background: var(--green-faint2) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .strand {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    animation: strandPulse 4s ease-in-out infinite;
+  }
+
+  .strand:nth-child(1) { left: 15%; animation-delay: 0s; }
+  .strand:nth-child(2) { left: 30%; animation-delay: 0.8s; }
+  .strand:nth-child(3) { left: 50%; animation-delay: 1.6s; }
+  .strand:nth-child(4) { left: 70%; animation-delay: 0.4s; }
+  .strand:nth-child(5) { left: 85%; animation-delay: 1.2s; }
+
+  @keyframes strandPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  .rungs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .rung {
+    position: absolute;
+    height: 0.5px;
+    background: var(--border);
+    left: 15%;
+    width: 15%;
+    animation: rungSlide 6s linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes rungSlide {
+    0% { top: -2%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 102%; opacity: 0; }
+  }
+
+  .tag-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border: 0.5px solid var(--border2);
+    border-radius: 2px;
+    color: var(--text2);
+  }
+
+  .tag.active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-faint);
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(42px, 8vw, 88px);
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 em {
+    color: var(--green);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text2);
+    max-width: 480px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-primary {
+    padding: 10px 24px;
+    background: var(--green);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--green-dim); color: #000; }
+
+  .btn-ghost {
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 13px;
+    border: 0.5px solid var(--border2);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--green); }
+
+  /* ── TERMINAL ── */
+  .terminal-wrap {
+    max-width: 680px;
+    width: 100%;
+    margin: 4rem auto 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .terminal {
+    background: var(--bg2);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .term-bar {
+    background: var(--bg3);
+    border-bottom: 0.5px solid var(--border);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: #3d1515; }
+  .dot-y { background: #3d3015; }
+  .dot-g { background: var(--green-dim); }
+
+  .term-title {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .term-body {
+    padding: 20px 22px;
+    font-size: 12.5px;
+    line-height: 2;
+    min-height: 160px;
+  }
+
+  .prompt { color: var(--text3); }
+  .cmd { color: var(--green-pale); }
+  .out { color: var(--text2); }
+  .out-ok { color: var(--green); }
+  .out-val { color: #FAC775; }
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* ── SECTION ── */
+  section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    color: var(--text2);
+    max-width: 560px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pipe-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 20px;
+    position: relative;
+  }
+
+  .pipe-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 44px;
+    bottom: -16px;
+    width: 0.5px;
+    background: var(--border2);
+  }
+
+  .pipe-num {
+    width: 48px;
+    height: 48px;
+    border: 0.5px solid var(--border2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--green);
+    flex-shrink: 0;
+    margin-bottom: 32px;
+    background: var(--green-faint);
+  }
+
+  .pipe-content {
+    padding-top: 10px;
+    padding-bottom: 32px;
+  }
+
+  .pipe-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .pipe-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .pipe-code {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 3px;
+    padding: 2px 8px;
+    color: var(--green-pale);
+  }
+
+  /* ── FEATURES GRID ── */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .feature {
+    background: var(--bg);
+    padding: 1.8rem;
+    transition: background 0.15s;
+  }
+
+  .feature:hover { background: var(--bg3); }
+
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    border: 0.5px solid var(--border2);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: var(--green-faint);
+  }
+
+  .feature-icon svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .feature-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .feature-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 4rem;
+  }
+
+  .stat {
+    background: var(--bg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 40px;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── DNA TICKER ── */
+  .dna-ticker {
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    padding: 10px 0;
+    overflow: hidden;
+    position: relative;
+    margin: 0 -100vw;
+  }
+
+  .ticker-track {
+    display: flex;
+    gap: 0;
+    animation: ticker 24s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-track span {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+
+  .base-A { color: #1D9E75; }
+  .base-T { color: #D85A30; }
+  .base-C { color: #378ADD; }
+  .base-G { color: #D4537E; }
+
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--bg2);
+    border: 0.5px solid var(--border2);
+    border-radius: 6px;
+    padding: 1.5rem;
+    font-size: 12.5px;
+    line-height: 2;
+    overflow-x: auto;
+  }
+
+  .c-kw { color: #D4537E; }
+  .c-fn { color: var(--green-pale); }
+  .c-str { color: #FAC775; }
+  .c-cm { color: var(--text3); }
+  .c-num { color: #EF9F27; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 2.5rem 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  footer a { color: var(--text2); }
+  footer a:hover { color: var(--green); }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .pipe-step { grid-template-columns: 36px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <svg class="helix" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 2C4 2 9 5 14 2" stroke="#1D9E75" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M4 6C4 6 9 9 14 6" stroke="#1D9E75" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <path d="M4 10C4 10 9 13 14 10" stroke="#1D9E75" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+      <path d="M4 14C4 14 9 17 14 14" stroke="#1D9E75" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+      <line x1="7" y1="2" x2="7" y2="14" stroke="#0F6E56" stroke-width="0.8" opacity="0.6"/>
+      <line x1="11" y1="2" x2="11" y2="14" stroke="#0F6E56" stroke-width="0.8" opacity="0.6"/>
+    </svg>
+    BioVault
+  </div>
+  <ul class="nav-links">
+    <li><a href="#how">how it works</a></li>
+    <li><a href="#features">features</a></li>
+    <li><a href="#quickstart">quickstart</a></li>
+    <li><a href="https://github.com/Altf4ah/biovault" class="nav-cta">github &nearr;</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <div class="strand"></div>
+    <div class="strand"></div>
+    <div class="strand"></div>
+    <div class="strand"></div>
+    <div class="strand"></div>
+    <div class="rungs" id="rungs"></div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag active">synthetic biology</span>
+    <span class="tag">bioinformatics</span>
+    <span class="tag">python</span>
+    <span class="tag">open source</span>
+  </div>
+
+  <h1>Store data<br>in <em>living</em> DNA</h1>
+
+  <p class="hero-sub">
+    BioVault encodes any file into synthetic DNA sequences —
+    with Reed-Solomon error correction, zstd compression,
+    and PCR primer design for selective retrieval.
+  </p>
+
+  <div class="btn-row">
+    <a href="https://github.com/Altf4ah/biovault" class="btn-primary">view on github</a>
+    <a href="#quickstart" class="btn-ghost">quickstart &darr;</a>
+  </div>
+
+  <div class="terminal-wrap">
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+        <span class="term-title">biovault — bash</span>
+      </div>
+      <div class="term-body" id="termBody">
+        <span class="prompt">$ </span><span class="cmd" id="termLine"></span><span class="cursor" id="cursor"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DNA TICKER -->
+<div class="dna-ticker">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- STATS -->
+<section>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">215</div>
+      <div class="stat-label">petabytes per gram of DNA</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1000+</div>
+      <div class="stat-label">year storage lifetime</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">20</div>
+      <div class="stat-label">tests passing</div>
+    </div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div id="how">
+    <p class="section-label">pipeline</p>
+    <h2 class="section-title">From bits to<br>base pairs</h2>
+    <p class="section-sub">BioVault follows the same pipeline used by real DNA storage research — from Microsoft and UW to JCVI.</p>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-num">01</div>
+      <div class="pipe-content">
+        <div class="pipe-title">compress</div>
+        <div class="pipe-desc">Pre-compress your file with zstd or gzip. Repetitive data like text, JSON, or HTML shrinks up to 98% — directly reducing synthesis cost.</div>
+        <code class="pipe-code">--compress</code>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">02</div>
+      <div class="pipe-content">
+        <div class="pipe-title">encode</div>
+        <div class="pipe-desc">Bytes are converted to 2-bit base pairs (00→A, 01→T, 10→C, 11→G), chunked into 150-base oligos with index headers and MD5 checksums.</div>
+        <code class="pipe-code">encoder.py</code>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">03</div>
+      <div class="pipe-content">
+        <div class="pipe-title">error correction</div>
+        <div class="pipe-desc">Reed-Solomon ECC is applied per fragment — the same algorithm used in CDs and QR codes. Corrects up to 5 byte errors per 150-base oligo.</div>
+        <code class="pipe-code">--ecc</code>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">04</div>
+      <div class="pipe-content">
+        <div class="pipe-title">export FASTA</div>
+        <div class="pipe-desc">Fragments are exported as standard FASTA format — directly uploadable to Twist Bioscience or IDT for physical DNA synthesis.</div>
+        <code class="pipe-code">output.fasta</code>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">05</div>
+      <div class="pipe-content">
+        <div class="pipe-title">primer design</div>
+        <div class="pipe-desc">PCR primer pairs are generated for each fragment. In wet lab, primers allow selective retrieval of only the data you need — a biological search query.</div>
+        <code class="pipe-code">--primers</code>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">06</div>
+      <div class="pipe-content">
+        <div class="pipe-title">decode</div>
+        <div class="pipe-desc">Sequencing reads (e.g. from Oxford Nanopore MinION) go back through the pipeline. ECC corrects errors, checksums verify fragments, file is recovered exactly.</div>
+        <code class="pipe-code">biovault decode</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="padding-top: 0;">
+  <p class="section-label">features</p>
+  <h2 class="section-title">Everything in one library</h2>
+  <p class="section-sub">A complete DNA storage pipeline you can run from the command line or import as a Python library.</p>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <div class="feature-title">Python API + CLI</div>
+      <div class="feature-desc">Use as a library or run from the terminal. Encode, decode, simulate, stats — all in one command.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="feature-title">Reed-Solomon ECC</div>
+      <div class="feature-desc">Corrects up to 5 byte errors per fragment — handles the ~1% error rate typical of real nanopore sequencing.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <div class="feature-title">zstd compression</div>
+      <div class="feature-desc">Auto-selects best codec (zstd, gzip, or raw). Reduces synthesis cost by up to 98% on compressible data.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="feature-title">GC content analysis</div>
+      <div class="feature-desc">Validates synthesis-readiness of sequences. Flags fragments with GC content outside the 40–60% sweet spot.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+      </div>
+      <div class="feature-title">PCR primer design</div>
+      <div class="feature-desc">Designs forward/reverse primer pairs per fragment. Validates Tm, GC%, homopolymer runs. Exports synthesis-ready CSV.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div class="feature-title">FASTA export</div>
+      <div class="feature-desc">Standard bioinformatics format with index headers and checksums. Upload directly to Twist Bioscience or IDT.</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICKSTART -->
+<section id="quickstart" style="padding-top: 0;">
+  <p class="section-label">quickstart</p>
+  <h2 class="section-title">Up in 30 seconds</h2>
+  <p class="section-sub">Clone the repo, install dependencies, encode your first file.</p>
+
+  <div class="code-block">
+    <span class="c-cm"># clone and install</span><br>
+    git clone https://github.com/Altf4ah/biovault<br>
+    cd biovault<br>
+    pip install -e <span class="c-str">".[dev]"</span><br>
+    <br>
+    <span class="c-cm"># encode a file to DNA</span><br>
+    python -m biovault encode myfile.pdf <span class="c-kw">--compress --ecc --primers</span><br>
+    <br>
+    <span class="c-cm"># decode it back</span><br>
+    python -m biovault decode myfile.pdf.fasta <span class="c-kw">--out</span> recovered.pdf<br>
+    <br>
+    <span class="c-cm"># simulate 1% sequencing error rate</span><br>
+    python -m biovault simulate myfile.pdf.fasta <span class="c-kw">--error-rate</span> <span class="c-num">0.01</span><br>
+    <br>
+    <span class="c-cm"># run all 20 tests</span><br>
+    pytest tests/ -v<br>
+  </div>
+
+  <div style="margin-top: 2rem; display: flex; gap: 12px; flex-wrap: wrap;">
+    <a href="https://github.com/Altf4ah/biovault" class="btn-primary">view source &nearr;</a>
+    <a href="https://github.com/Altf4ah/biovault/issues" class="btn-ghost">open an issue</a>
+  </div>
+</section>
+
+<footer>
+  <span>built by <a href="https://github.com/Altf4ah">Altf4ah</a> &mdash; MIT license</span>
+  <span>
+    <a href="https://github.com/Altf4ah/biovault">github</a> &nbsp;&middot;&nbsp;
+    <a href="https://github.com/Altf4ah/biovault/issues">issues</a> &nbsp;&middot;&nbsp;
+    <a href="https://github.com/Altf4ah/biovault/blob/main/README.md">docs</a>
+  </span>
+</footer>
+
+<script>
+const terms = [
+  { cmd: 'python -m biovault encode genome.txt --compress --ecc', delay: 60,
+    output: ['[+] Compressed: zstd | 4,200B → 89B (97.9% saved)',
+             '[+] Encoding 89 bytes...',
+             '[+] Encoded into 2 fragments (356 bases)',
+             '[ok] Saved to: genome.txt.fasta'] },
+  { cmd: 'python -m biovault stats genome.txt.fasta', delay: 60,
+    output: ['  Fragments  : 2','  Total bases: 356','  Avg GC     : 47.2%','  Status     : synthesis-ready ✓'] },
+  { cmd: 'pytest tests/ -q', delay: 40,
+    output: ['20 passed in 0.11s ✓'] },
+];
+
+let termIdx = 0, charIdx = 0, outIdx = 0;
+const lineEl = document.getElementById('termLine');
+const bodyEl = document.getElementById('termBody');
+
+function typeCmd() {
+  const t = terms[termIdx];
+  if (charIdx < t.cmd.length) {
+    lineEl.textContent += t.cmd[charIdx++];
+    setTimeout(typeCmd, t.delay);
+  } else {
+    setTimeout(showOutput, 300);
+  }
+}
+
+function showOutput() {
+  const t = terms[termIdx];
+  if (outIdx < t.output.length) {
+    const line = document.createElement('div');
+    line.className = 'out' + (t.output[outIdx].includes('✓') || t.output[outIdx].includes('ok') ? ' out-ok' : '');
+    line.textContent = t.output[outIdx++];
+    lineEl.parentNode.insertBefore(line, lineEl);
+    setTimeout(showOutput, 120);
+  } else {
+    setTimeout(nextTerm, 1800);
+  }
+}
+
+function nextTerm() {
+  termIdx = (termIdx + 1) % terms.length;
+  charIdx = 0; outIdx = 0;
+  Array.from(bodyEl.querySelectorAll('.out, .out-ok')).forEach(e => e.remove());
+  lineEl.textContent = '';
+  setTimeout(typeCmd, 400);
+}
+
+typeCmd();
+
+const bases = 'ATCGATCGATCGATCGATCGATCG';
+const colors = { A: 'base-A', T: 'base-T', C: 'base-C', G: 'base-G' };
+const ticker = document.getElementById('ticker');
+const seq = (bases.repeat(60));
+[1, 2].forEach(() => {
+  const span = document.createElement('span');
+  span.innerHTML = seq.split('').map(b => `<span class="${colors[b]}">${b}</span>`).join('');
+  ticker.appendChild(span);
+});
+
+const rungs = document.getElementById('rungs');
+for (let i = 0; i < 12; i++) {
+  const r = document.createElement('div');
+  r.className = 'rung';
+  r.style.animationDelay = (i * 0.5) + 's';
+  r.style.animationDuration = (5 + Math.random() * 3) + 's';
+  r.style.left = (10 + Math.random() * 30) + '%';
+  r.style.width = (10 + Math.random() * 25) + '%';
+  rungs.appendChild(r);
+}
+</script>
+</body>
+</html>
